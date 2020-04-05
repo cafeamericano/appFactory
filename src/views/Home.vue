@@ -1,15 +1,12 @@
 <template>
-    <div class='container bg-info p-3'>
-        <router-link :to="{name:'AppForm'}">
-            <div class='btn btn-danger mb-3'>
-                Add New Application
-            </div>
-        </router-link>
+    <div class='container-fluid p-3 animated fadeInRight'>
+
         <div class='row'>
-            <div class='col-4' v-for='item in allApplications' :key='item.title'>
+            <div class='col-xl-3 col-lg-4' v-for='item in allApplications' :key='item.title'>
                 <AppCard v-bind='item'/>
             </div>
         </div>
+
     </div>
 </template>
 
