@@ -1,0 +1,224 @@
+<template>   
+    <div class='container animated fadeInRight'>
+        <div class='card rounded p-3 text-left'>
+
+            <form>
+
+                <label>Title</label>
+                <input type='text'  v-model='app.title' class='form-control'/>
+                <br/>
+
+                <label>Publish Date</label>
+                <input type='date'  v-model='app.publishDate' class='form-control'/>
+                <br/>
+
+                <label>Featured?</label>
+                <input type='checkbox' v-model='app.isFeatured' class='form-control'/>
+                <br/>
+
+                <label>Collaboration?</label>
+                <input type='checkbox'  v-model='app.isCollaboration' class='form-control'/>
+                <br/>
+
+                <label>Image</label>
+                <img height='100px' width='150px'/>
+                <br/><br/>
+                <input id='imageThumbnailUpload' type='file' @change='encodeImageUpload'/>
+                <br/><br/>
+
+                <label>Language</label>
+                <input type='text'  v-model='app.language' class='form-control'/>
+                <br/>
+
+                <label>Description</label>
+                <textarea  v-model='app.description' class='form-control'/>
+                <br/>
+
+                <label>Deployed Link</label>
+                <input type='text'  v-model='app.deployedLink' class='form-control'/>
+                <br/>
+
+                <label>GitHub Link</label>
+                <input type='text'  v-model='app.githubLink' class='form-control'/>
+                <br/>
+
+                <label>Support Status</label>
+                <select v-model='app.supportStatus' class='form-control'>
+                    <option default disabled>Select support status</option>
+                    <option value='active'>Active</option>
+                    <option value='inactive'>Inactive</option>
+                    <option value='discontinued'>Discontinued</option>
+                </select>
+                <br/>
+
+                <label>Application Type</label>
+                <select v-model='app.applicationType' class='form-control'>
+                    <option default disabled>Select application type</option>
+                    <option value='client-side'>Client Side</option>
+                    <option value='server-side'>Server Side</option>
+                    <option value='unified'>Unified</option>
+                </select>
+                <br/>
+
+                <label>Keywords</label>
+                <br/>
+                <span class='col-xl-3 col-lg-4' v-for='item in allKeywords' :key='item.name'>
+                    <label>{{item.name}}</label>
+                    <input type='checkbox' :value='item.name' v-model='app.keywords'/>
+                </span>
+                
+                <br/>
+
+                <div class='row'>
+                    <div class='col text-left'>
+                        <div v-if='editingRecord' class='btn btn-danger' @click='processDelete'>Delete</div>
+                    </div>
+                    <div class='text-right'>
+                        <div class='btn btn-secondary ml-2' @click='$router.go(-1)'>Cancel</div>
+                        <div v-if='editingRecord' class='btn btn-primary ml-2' @click='processEdit'>Submit</div>
+                        <div v-else class='btn btn-primary ml-2' @click='processCreate'>Submit</div>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</template> 
+
+<script>
+    export default {
+        name: 'AppDetails',
+        props: [
+            'isNewRecord'
+        ],
+        mounted: function() {
+            var self = this;
+            this.pullKeywords();
+            if (self.editingRecord) {
+                this.processGet();
+            }
+        },
+        data: function () {
+            return {
+                editingRecord: !this.isNewRecord,
+                allKeywords: [],
+                app: {
+                    title: '',
+                    publishDate: '',
+                    isFeatured: '',
+                    isCollaboration: '',
+                    imagePath: '',
+                    language: '',
+                    description: '',
+                    deployedLink: '',
+                    githubLink: '',
+                    supportStatus: '',
+                    applicationType: '',
+                    keywords: []
+                }
+            }
+        },
+        methods: {
+            
+            encodeImageUpload: function() {
+                var self = this;
+                const preview = document.querySelector('img');
+                const file = document.getElementById('imageThumbnailUpload').files[0];
+                const reader = new FileReader();
+            
+                reader.addEventListener("load", function () {
+                    preview.src = reader.result;
+                    self.imagePath = reader.result;
+                }, false);
+
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+
+            },
+
+            pullKeywords() {
+                var self = this;
+                fetch("https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/keywords").then(function (response) {
+                    return response.json();
+                }).then(function (result) {
+                    self.allKeywords = result;
+                });
+            },
+
+            processGet: function() {
+                var self = this;
+                var url = 'https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/applications'
+                fetch(url, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" }
+                }).then(function (response) {
+                    return response.json();
+                }).then(response => {
+                    let litmus;
+                    for (var i = 0; i < response.length; i++) {
+                        if (response[i]._id.$oid === this.$route.params.id) {
+                            litmus = response[i]
+                        }
+                    }
+                    self.app = litmus;
+                    self.app.publishDate = self.app.publishDate.substring(0,10)
+                });
+            },
+
+            processCreate: function() {
+                var self = this;
+                var url = 'https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/applications'
+                fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(this.app)
+                }).then(response => {
+                    self.$router.go(-1);
+                });
+            },
+            
+            processEdit: function() {
+                var self = this;
+                var url = 'https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/applications'
+                fetch(url, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        _id: this.$route.params.id,
+                        title: this.app.title,
+                        publishDate: this.app.publishDate,
+                        isFeatured: this.app.isFeatured,
+                        isCollaboration: this.app.isCollaboration,
+                        imagePath: this.app.imagePath,
+                        language: this.app.language,
+                        description: this.app.description,
+                        deployedLink: this.app.deployedLink,
+                        githubLink: this.app.githubLink,
+                        supportStatus: this.app.supportStatus,
+                        applicationType: this.app.applicationType,
+                        keywords: this.app.keywords
+                    })
+                }).then(response => {
+                    self.$router.go(-1)
+                });
+            },
+
+            processDelete: function() {
+                var self = this;
+                var url = 'https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/applications'
+                fetch(url, {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        _id: this.$route.params.id
+                    })
+                }).then(response => {
+                    self.$router.go(-1)
+                });
+            }
+
+        }
+    }
+</script>
