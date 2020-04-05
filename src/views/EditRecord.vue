@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div class='card rounded mb-3 p-3 text-left'>
+    <div class='container animated fadeInRight'>
+        <div class='card rounded p-3 text-left'>
 
             <small>{{ this.$route.params.id }} </small>
 
@@ -23,8 +23,9 @@
                 <br/>
 
                 <label>Image</label>
-                <br/>
-                <input type='file'/>
+                <img id='editApp-uploadImagePreview' height='100px' width='150px' :src='app.imagePath'/>
+                <br/><br/>
+                <input id='uploadImageWhenEditingApp' type='file' @change='encodeImageUpload'/>
                 <br/><br/>
 
                 <label>Language</label>
@@ -72,7 +73,8 @@
                         <div class='btn btn-danger' @click='processDelete'>Delete</div>
                     </div>
                     <div class='col text-right'>
-                        <div class='btn btn-primary' @click='processEdit'>Update</div>
+                        <div class='btn btn-secondary ml-2' @click='$router.go(-1)'>Cancel</div>
+                        <div class='btn btn-primary ml-2' @click='processEdit'>Update</div>
                     </div>
                 </div>
 
@@ -109,6 +111,24 @@ export default {
     },
     props: [],
     methods: {
+        encodeImageUpload: function() {
+            var self = this;
+            const preview = document.getElementById('editApp-uploadImagePreview');
+            const file = document.getElementById('uploadImageWhenEditingApp').files[0];
+            const reader = new FileReader();
+        
+            reader.addEventListener("load", function () {
+                // convert image file to base64 string
+                console.log(reader.result)
+                preview.src = reader.result;
+                self.app.imagePath = reader.result;
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+
+        },
         processGet: function() {
             var self = this;
             var url = 'https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/applications'
@@ -137,11 +157,12 @@ export default {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    _id: self.$route.params.id,
+                    _id: this.$route.params.id,
                     title: this.app.title,
-                    publishDate: self.app.publishDate,
-                    isFeatured: self.app.isFeatured,
+                    publishDate: this.app.publishDate,
+                    isFeatured: this.app.isFeatured,
                     isCollaboration: this.app.isCollaboration,
+                    imagePath: this.app.imagePath,
                     language: this.app.language,
                     description: this.app.description,
                     deployedLink: this.app.deployedLink,
@@ -152,10 +173,11 @@ export default {
                 })
             }).then(response => {
                 console.log(response)
-                alert('updated app')
+                self.$router.go(-1)
             });
         },
         processDelete: function() {
+            var self = this;
             var url = 'https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/applications'
             fetch(url, {
                 method: "DELETE",
@@ -165,6 +187,7 @@ export default {
                 })
             }).then(response => {
                 console.log(response)
+                self.$router.go(-1)
             });
         }
     }
@@ -173,4 +196,8 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+label {
+    display: block
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
-    <div class='container bg-dark'>
-        <div class='card rounded mb-3 p-3 text-left'>
+    <div class='container animated fadeInRight'>
+        <div class='card rounded p-3 text-left'>
 
             <form>
 
@@ -21,7 +21,9 @@
                 <br/>
 
                 <label>Image</label>
-                <input type='file'/>
+                <img height='100px' width='150px'/>
+                <br/><br/>
+                <input id='uploadImageWhenAddingApp' type='file' @change='encodeImageUpload'/>
                 <br/><br/>
 
                 <label>Language</label>
@@ -64,7 +66,10 @@
                 
                 <br/>
 
-                <div class='btn btn-primary' @click='handleSubmit'>Submit</div>
+                <div class='text-right'>
+                    <div class='btn btn-secondary ml-2' @click='$router.go(-1)'>Cancel</div>
+                    <div class='btn btn-primary ml-2' @click='handleSubmit'>Submit</div>
+                </div>
 
             </form>
 
@@ -77,8 +82,42 @@
 export default {
     name: 'AppForm',
     props: [],
+    data: function () {
+        return {
+            title: '',
+            publishDate: '',
+            isFeatured: '',
+            isCollaboration: '',
+            imagePath: '',
+            language: '',
+            description: '',
+            deployedLink: '',
+            githubLink: '',
+            supportStatus: '',
+            applicationType: '',
+            keywords: ''
+        }
+    },
     methods: {
+        encodeImageUpload: function() {
+            var self = this;
+            const preview = document.querySelector('img');
+            const file = document.getElementById('uploadImageWhenAddingApp').files[0];
+            const reader = new FileReader();
+        
+            reader.addEventListener("load", function () {
+                // convert image file to base64 string
+                preview.src = reader.result;
+                self.imagePath = reader.result;
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+
+        },
         handleSubmit: function() {
+            var self = this;
             var url = 'https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/applications'
             fetch(url, {
                 method: "POST",
@@ -88,6 +127,7 @@ export default {
                     publishDate: this.publishDate,
                     isFeatured: this.isFeatured,
                     isCollaboration: this.isCollaboration,
+                    imagePath: this.imagePath,
                     language: this.language,
                     description: this.description,
                     deployedLink: this.deployedLink,
@@ -98,25 +138,10 @@ export default {
                 })
             }).then(response => {
                 console.log(response);
-                alert('added new app')
+                self.$router.go(-1);
             });
         }
-    },
-    data: function () {
-        return {
-            title: '',
-            publishDate: '',
-            isFeatured: '',
-            isCollaboration: '',
-            language: '',
-            description: '',
-            deployedLink: '',
-            githubLink: '',
-            supportStatus: '',
-            applicationType: '',
-            keywords: ''
-        }
-    },
+    }
 }
 
 </script>
