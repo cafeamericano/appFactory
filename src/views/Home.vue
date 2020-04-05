@@ -1,11 +1,20 @@
 <template>
-    <div class='container-fluid p-3 animated fadeInRight'>
+    <div class='container-fluid p-3'>
 
-        <div class='row'>
-            <div class='col-xl-3 col-lg-4' v-for='item in allApplications' :key='item.title'>
-                <AppCard v-bind='item'/>
+        <section v-if="applicationsLoaded" class='animated slideInUp'>
+            <div class='row'>
+                <div class='col-xl-3 col-lg-4' v-for='item in allApplications' :key='item.title'>
+                    <AppCard v-bind='item'/>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <section v-else>
+            <div>Loading list of applications...</div>
+            <div class="spinner-grow text-success" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </section>
 
     </div>
 </template>
@@ -26,7 +35,8 @@ export default {
     data() {
         return {
             componentKey: 0,
-            allApplications: []
+            allApplications: [],
+            applicationsLoaded: false
         }
     },
     methods: {
@@ -37,6 +47,7 @@ export default {
             }).then(function (result) {
                 self.allApplications = result;
                 self.componentKey +=1;
+                self.applicationsLoaded = true;
             });
         },
         pullKeywords() {

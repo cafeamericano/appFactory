@@ -18,6 +18,12 @@
                     <li class="nav-item">
                         <router-link :to="{name:'About'}">About</router-link> 
                     </li>
+                    <li class="nav-item">
+                        <a href='https://cafeamericano.github.io/appGalleryLite/' target='_blank'>Keyword Factory</a> 
+                    </li>
+                    <li class="nav-item">
+                        <a href='https://cafeamericano.github.io/appGalleryLite/' target='_blank'>App Gallery</a> 
+                    </li>
                 </ul>
             </div>
         </nav>
