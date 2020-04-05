@@ -63,9 +63,12 @@
                 <br/>
 
                 <label>Keywords</label>
-                <input type='text' v-model='app.keywords' class='form-control'/>
                 <br/>
-                
+                <span class='col-xl-3 col-lg-4' v-for='item in allKeywords' :key='item.name'>
+                    <label>{{item.name}}</label>
+                    <input type='checkbox' :value='item.name' v-model='app.keywords'/>
+                </span>
+
                 <br/>
 
                 <div class='row'>
@@ -91,11 +94,13 @@ export default {
     name: 'AppCard',
     mounted: function() {
         this.processGet();
+        this.pullKeywords();
     },
     data() {
         return {
             uuid: this.$route.params.id,
-            app
+            app,
+            allKeywords: {}
             // title: this.$attrs.title,
             // publishDate: this.$attrs.publishDate.substring(0,10),
             // isFeatured: this.$attrs.isFeatured,
@@ -128,6 +133,14 @@ export default {
                 reader.readAsDataURL(file);
             }
 
+        },
+        pullKeywords() {
+            var self = this;
+            fetch("https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/keywords").then(function (response) {
+                return response.json();
+            }).then(function (result) {
+                self.allKeywords = result;
+            });
         },
         processGet: function() {
             var self = this;
@@ -197,7 +210,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-label {
+/* label {
     display: block
-}
+} */
 </style>
