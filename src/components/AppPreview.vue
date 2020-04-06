@@ -7,7 +7,11 @@
             <div class="col text-right p-3">
                 <strong>{{ $attrs.title }}</strong>
                 <br/>
-                <router-link :to="{name:'EditRecord', params: {id: $attrs._id.$oid || $attrs._id}}"><div class='btn btn-primary'>Edit</div></router-link>
+                <small>Published {{ $attrs.publishDate }}</small>
+                <br/>
+                <router-link :to="{name:'EditRecord', params: {id: $attrs._id.$oid || $attrs._id}}">
+                    <i class="far fa-edit"></i>
+                </router-link>
             </div>
         </div>
     </div>
@@ -16,7 +20,7 @@
 <script>
 
 export default {
-    name: 'AppCard',
+    name: 'AppPreview',
     data: function () {
         return {
             // Properties go here
@@ -29,6 +33,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.row {
+    margin-right: 0px;
+}
+
+.card {
+    max-height: 100px;
+    overflow: hidden;
+}
 
 img {
     height: 100px;

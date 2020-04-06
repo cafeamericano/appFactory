@@ -3,30 +3,30 @@
 
         <section v-if="applicationsLoaded" class='animated slideInUp'>
             <div class='row'>
-                <div class='col-xl-3 col-lg-4' v-for='item in allApplications' :key='item.title'>
-                    <AppCard v-bind='item'/>
+                <div class='col-xl-4 col-lg-6 col-md-6' v-for='item in allApplications' :key='item.title'>
+                    <AppPreview v-bind='item'/>
                 </div>
             </div>
         </section>
 
         <section v-else>
-            <div>Loading list of applications...</div>
-            <div class="spinner-grow text-success" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
+            <ScreenOverlay :content='loadingMessage'/>
         </section>
 
     </div>
 </template>
 
 <script>
+
 // @ is an alias to /src
-import AppCard from "@/components/AppCard.vue";
+import AppPreview from "@/components/AppPreview.vue";
+import ScreenOverlay from "@/components/ScreenOverlay.vue";
 
 export default {
-    name: "Home",
+    name: "AllApplications",
     components: {
-        AppCard
+        AppPreview,
+        ScreenOverlay
     },
     mounted: function() {
         this.pullApplications();
@@ -36,7 +36,13 @@ export default {
         return {
             componentKey: 0,
             allApplications: [],
-            applicationsLoaded: false
+            applicationsLoaded: false,
+            loadingMessage: `
+                <div>Loading list of applications...</div>
+                <div class="spinner-grow text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            `
         }
     },
     methods: {

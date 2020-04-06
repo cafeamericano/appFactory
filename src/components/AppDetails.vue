@@ -1,71 +1,88 @@
 <template>   
     <div class='container animated fadeInRight'>
-        <div class='card rounded p-3 text-left'>
+        <div class='text-left'>
 
             <form>
+                <div class='row'>
 
-                <label>Title</label>
-                <input type='text'  v-model='app.title' class='form-control'/>
-                <br/>
+                    <div class='col border-right'>
 
-                <label>Publish Date</label>
-                <input type='date'  v-model='app.publishDate' class='form-control'/>
-                <br/>
+                        <label>Image</label>
+                        <br/>
+                        <img id='imageThumbnailPreview' :src='app.imagePath' class='border'/>
+                        <br/><br/>
+                        <input 
+                            id='imageThumbnailUpload' 
+                            type='file' 
+                            @change='encodeImageUpload'/>
+                        <br/><br/>
 
-                <label>Featured?</label>
-                <input type='checkbox' v-model='app.isFeatured' class='form-control'/>
-                <br/>
+                        <label>Title</label>
+                        <input type='text'  v-model='app.title' class='form-control'/>
+                        <br/>
 
-                <label>Collaboration?</label>
-                <input type='checkbox'  v-model='app.isCollaboration' class='form-control'/>
-                <br/>
+                        <label>Publish Date</label>
+                        <input type='date'  v-model='app.publishDate' class='form-control'/>
+                        <br/>
 
-                <label>Image</label>
-                <img height='100px' width='150px'/>
-                <br/><br/>
-                <input id='imageThumbnailUpload' type='file' @change='encodeImageUpload'/>
-                <br/><br/>
+                        <div class='row'>
+                            <div class='col'>
+                                <label class='checkbox-label'>Featured?</label>
+                                <input type='checkbox' v-model='app.isFeatured' />
+                            </div>
+                            <div class='col'>
+                                <label class='checkbox-label'>Collaboration?</label>
+                                <input type='checkbox'  v-model='app.isCollaboration'/>
+                            </div>
+                        </div>
+                        <br/>
 
-                <label>Language</label>
-                <input type='text'  v-model='app.language' class='form-control'/>
-                <br/>
+                        <label>Language</label>
+                        <input type='text'  v-model='app.language' class='form-control'/>
+                        <br/>
 
-                <label>Description</label>
-                <textarea  v-model='app.description' class='form-control'/>
-                <br/>
+                        <label>Description</label>
+                        <textarea  v-model='app.description' class='form-control'/>
+                        <br/>
 
-                <label>Deployed Link</label>
-                <input type='text'  v-model='app.deployedLink' class='form-control'/>
-                <br/>
+                        <label>Deployed Link</label>
+                        <input type='text'  v-model='app.deployedLink' class='form-control'/>
+                        <br/>
 
-                <label>GitHub Link</label>
-                <input type='text'  v-model='app.githubLink' class='form-control'/>
-                <br/>
+                        <label>GitHub Link</label>
+                        <input type='text'  v-model='app.githubLink' class='form-control'/>
+                        <br/>
 
-                <label>Support Status</label>
-                <select v-model='app.supportStatus' class='form-control'>
-                    <option default disabled>Select support status</option>
-                    <option value='active'>Active</option>
-                    <option value='inactive'>Inactive</option>
-                    <option value='discontinued'>Discontinued</option>
-                </select>
-                <br/>
+                        <label>Support Status</label>
+                        <select v-model='app.supportStatus' class='form-control'>
+                            <option default disabled>Select support status</option>
+                            <option value='active'>Active</option>
+                            <option value='inactive'>Inactive</option>
+                            <option value='discontinued'>Discontinued</option>
+                        </select>
+                        <br/>
 
-                <label>Application Type</label>
-                <select v-model='app.applicationType' class='form-control'>
-                    <option default disabled>Select application type</option>
-                    <option value='client-side'>Client Side</option>
-                    <option value='server-side'>Server Side</option>
-                    <option value='unified'>Unified</option>
-                </select>
-                <br/>
+                        <label>Application Type</label>
+                        <select v-model='app.applicationType' class='form-control'>
+                            <option default disabled>Select application type</option>
+                            <option value='client-side'>Client Side</option>
+                            <option value='server-side'>Server Side</option>
+                            <option value='unified'>Unified</option>
+                        </select>
+                        <br/>
+                    </div>
 
-                <label>Keywords</label>
-                <br/>
-                <span class='col-xl-3 col-lg-4' v-for='item in allKeywords' :key='item.name'>
-                    <label>{{item.name}}</label>
-                    <input type='checkbox' :value='item.name' v-model='app.keywords'/>
-                </span>
+                    <div class='col'>
+                        <label>Keywords</label>
+                        <br/>
+                        <span class='col-xl-3 col-lg-4' v-for='item in allKeywords' :key='item.name'>
+                            <label class='checkbox-label'>{{item.name}}</label>
+                            <input type='checkbox' :value='item.name' v-model='app.keywords'/>
+                            <br/>
+                        </span>
+                    </div>
+
+                </div>
                 
                 <br/>
 
@@ -123,13 +140,13 @@
             
             encodeImageUpload: function() {
                 var self = this;
-                const preview = document.querySelector('img');
+                const preview = document.getElementById('imageThumbnailPreview');
                 const file = document.getElementById('imageThumbnailUpload').files[0];
                 const reader = new FileReader();
             
                 reader.addEventListener("load", function () {
                     preview.src = reader.result;
-                    self.imagePath = reader.result;
+                    self.app.imagePath = reader.result;
                 }, false);
 
                 if (file) {
@@ -143,7 +160,7 @@
                 fetch("https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/keywords").then(function (response) {
                     return response.json();
                 }).then(function (result) {
-                    self.allKeywords = result;
+                    self.allKeywords = result.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
                 });
             },
 
@@ -222,3 +239,22 @@
         }
     }
 </script>
+
+<style scoped>
+
+img {
+    max-width: 100%;
+    min-width: 100%;
+}
+
+.checkbox-label {
+    margin-right: 10px;
+    font-weight: normal;
+}
+
+label{
+    font-weight: bolder;
+    margin-bottom: 0.2rem
+}
+
+</style>
