@@ -14,7 +14,7 @@
 import AppDetails from "../components/AppDetails"
 
 export default {
-    name: 'AppCard',
+    name: 'EditRecord',
     components: {
         AppDetails
     },
@@ -28,8 +28,4 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-/* label {
-    display: block
-} */
-</style>
+<style scoped></style>
