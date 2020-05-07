@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["about"],{f820:function(e,t,n){"use strict";n.r(t);var a=function(){var e=this,t=e.$createElement,n=e._self._c||t;return n("div",{staticClass:"about"},[n("ScreenOverlay",{attrs:{content:e.copyrightMessage}})],1)},r=[],s=n("7763"),c={name:"About",components:{ScreenOverlay:s["a"]},data:function(){return{copyrightMessage:"©2020 Matthew Farmer"}}},o=c,u=n("2877"),l=Object(u["a"])(o,a,r,!1,null,null,null);t["default"]=l.exports}}]);
+//# sourceMappingURL=about.5fb1b3dd.js.map
