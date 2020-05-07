@@ -3,9 +3,38 @@
 
         <section v-if="applicationsLoaded" class='animated slideInUp'>
             <div class='row'>
-                <div class='col-xl-4 col-lg-6 col-md-6' v-for='item in allApplications' :key='item.title'>
+
+                <!-- Active -->
+                <div class="col-12 text-left">
+                    <h5>Active</h5>
+                    <hr/>
+                </div>
+                <div class='col-xl-4 col-lg-6 col-md-6' v-for='item in allApplications.filter(item => item.supportStatus == "active")' :key='item.title'>
                     <AppPreview v-bind='item'/>
                 </div>
+                <div class="col-12 text-left mb-4"></div>
+
+                <!-- Inactive -->
+                <div class="col-12 text-left">
+                    <h5>Inactive</h5>
+                    <hr/>
+                </div>
+                <div class='col-xl-4 col-lg-6 col-md-6' v-for='item in allApplications.filter(item => item.supportStatus == "inactive")' :key='item.title'>
+                    <AppPreview v-bind='item'/>
+                </div>
+                <div class="col-12 text-left mb-4"></div>
+
+                <!-- Discontinued -->
+                <div class="col-12 text-left">
+                    <h5>Discontinued</h5>
+                    <hr/>
+                </div>
+                <div class='col-xl-4 col-lg-6 col-md-6' v-for='item in allApplications.filter(item => item.supportStatus == "discontinued")' :key='item.title'>
+                    <AppPreview style="opacity: 0.35" v-bind='item'/>
+                </div>
+                <div class="col-12 text-left mb-4"></div>
+
+
             </div>
         </section>
 

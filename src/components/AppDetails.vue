@@ -34,6 +34,10 @@
                                 <label class='checkbox-label'>Collaboration?</label>
                                 <input type='checkbox'  v-model='app.isCollaboration'/>
                             </div>
+                            <div class='col'>
+                                <label class='checkbox-label'>Private Repo?</label>
+                                <input type='checkbox'  v-model='app.isPrivateRepo'/>
+                            </div>
                         </div>
                         <br/>
 
@@ -73,6 +77,31 @@
                     </div>
 
                     <div class='col'>
+
+                        <label>Deployment</label>
+                        <div class='p-3 bg-dark text-light'>
+                            <label>Frontend Link</label>
+                            <input type='text'  v-model='app.frontendLink' class='form-control'/>
+                            <br/>
+
+                            <label>Backend Link</label>
+                            <input type='text'  v-model='app.backendLink' class='form-control'/>
+                            <br/>
+                        </div>
+                        <br/>
+
+                        <label>Repositories</label>
+                        <div class='p-3 bg-primary text-light'>
+                            <label>Frontend Repo Link</label>
+                            <input type='text'  v-model='app.frontendRepoLink' class='form-control'/>
+                            <br/>
+
+                            <label>Backend Repo Link</label>
+                            <input type='text'  v-model='app.backendRepoLink' class='form-control'/>
+                            <br/>
+                        </div>
+                        <br/>
+
                         <label>Keywords</label>
                         <br/>
                         <span class='col-xl-3 col-lg-4' v-for='item in allKeywords' :key='item.name'>
@@ -132,6 +161,10 @@
                     githubLink: '',
                     supportStatus: '',
                     applicationType: '',
+                    frontendLink: '',
+                    backendLink: '',
+                    frontendRepoLink: '',
+                    backendRepoLink: '',
                     keywords: []
                 }
             }
@@ -160,7 +193,8 @@
                 fetch("https://central-api-flask-cm6ud432ka-uc.a.run.app/AppGalleryLite/api/keywords").then(function (response) {
                     return response.json();
                 }).then(function (result) {
-                    self.allKeywords = result.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
+                    let unfilteredKeywords =  result.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
+                    self.allKeywords = unfilteredKeywords.filter(item => item.showInGallery)
                 });
             },
 
@@ -215,6 +249,10 @@
                         githubLink: this.app.githubLink,
                         supportStatus: this.app.supportStatus,
                         applicationType: this.app.applicationType,
+                        frontendLink: this.app.frontendLink,
+                        backendLink: this.app.backendLink,
+                        frontendRepoLink: this.app.frontendRepoLink,
+                        backendRepoLink: this.app.backendRepoLink,
                         keywords: this.app.keywords
                     })
                 }).then(response => {
