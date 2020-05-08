@@ -1,4 +1,4 @@
 module.exports = {
-  lintOnSave: false,
-//   publicPath: "/appFactory/"
+    lintOnSave: false,
+    publicPath: "/appFactory/" // Comment out during development
 };
